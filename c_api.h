@@ -13,9 +13,9 @@
 
 \verbatim
 Source Control Info:
-  Revision path: $Id: //dev/cache2007.1.x/modules/cpp/c/c_api.h#1 $
-  Last Change:   $Date: 2006/06/05 $
-  Modified by:   $Author: woodfin $
+  Revision path: $Id: c_api.h 2 2015-08-01 18:40:40Z bedipritpal $
+  Last Change:   $Date: 2015-08-01 13:40:40 -0500 (Sat, 01 Aug 2015) $
+  Modified by:   $Author: bedipritpal $
 \endverbatim
 
 */

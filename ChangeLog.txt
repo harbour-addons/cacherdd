@@ -1,5 +1,5 @@
 /*
- * $Id: ab03f097e3ee43782f4e14612d361df2873e325a $
+ * $Id: ChangeLog.txt 2 2015-08-01 18:40:40Z bedipritpal $
  */
 
 /* Read doc/howtorep.txt and use this format for entry headers:
@@ -9,6 +9,9 @@
    Encoding: UTF-8 (No BOM)  Notation (in 5th position):
      * Change, ! Fix, % Optimization, + Addition, - Removal, ; Comment
  */
+
+2015-08-01 11:38 UTC-0800 Pritpal Bedi (bedipritpal/at/hotmail.com)
+  ! Adjusted SVN properties.
  
 2015-07-31 19:08 UTC-0800 Pritpal Bedi (bedipritpal/at/hotmail.com)
   + cache.c
