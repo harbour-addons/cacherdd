@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.txt 2 2015-08-01 18:40:40Z bedipritpal $
+ * $Id: ChangeLog.txt 3 2015-08-01 20:31:04Z bedipritpal $
  */
 
 /* Read doc/howtorep.txt and use this format for entry headers:
@@ -9,6 +9,10 @@
    Encoding: UTF-8 (No BOM)  Notation (in 5th position):
      * Change, ! Fix, % Optimization, + Addition, - Removal, ; Comment
  */
+
+2015-08-01 13:26 UTC-0800 Pritpal Bedi (bedipritpal/at/hotmail.com)
+  + COPYING.txt
+    + Disclaimer: Intersystems' Binaries.    
 
 2015-08-01 11:38 UTC-0800 Pritpal Bedi (bedipritpal/at/hotmail.com)
   ! Adjusted SVN properties.

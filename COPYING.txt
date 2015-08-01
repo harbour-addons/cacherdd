@@ -1,0 +1,43 @@
+------------------- NOTICE --------------------
+                     
+
+DISCLAIMER:
+   The following binaries and headers are the property 
+   of Intersystems.com. These are provided here with this 
+   distribution for the purpose of application development only. 
+   No source-code for these binaries will be made available anyway. 
+   These binaries are wholly owned by Intersystems.
+
+   c_api.h
+   cbind.dll
+   CacheODBC.dll
+   cppbind_msvc80.dll
+   
+   The above binaries are contained in Cache version 
+   2007.1.0.369. This version is no-longer supported 
+   by Intersystems, and hance are no longer available.
+   That's why these are included in this repository.
+
+   
+   
+ADDITIONAL INFO:
+   
+Cache Database Server Download ( Trial Version )
+   https://download.intersystems.com/download/login.csp
+   
+Library to link with Harbour application
+   /harbour/contrib/cacherdd/bin/cbind.dll
+   
+Binaries to place along-side application
+   /harbour/contrib/cacherdd/bin/cbind.dll
+   /harbour/contrib/cacherdd/bin/CacheODBC.dll
+   /harbour/contrib/cacherdd/bin/cppbind_msvc80.dll
+   
+   NOTE: I could never get any higher version .dlls usable 
+         with our CacheRDD, so we will stay with it. It is 
+         good for all the versions of Ccahe from 2007 until now.
+         
+         These libraries are Intersystems property.
+        
+
+   
