@@ -1,0 +1,108 @@
+/*
+ * $Id: ab03f097e3ee43782f4e14612d361df2873e325a $
+ */
+
+/* Read doc/howtorep.txt and use this format for entry headers:
+   YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name (your_email address)
+   2013-12-31 13:59 UTC+0100 Foo Bar (foo.bar foobar.org)
+   See copyright/license at the end of the file.
+   Encoding: UTF-8 (No BOM)  Notation (in 5th position):
+     * Change, ! Fix, % Optimization, + Addition, - Removal, ; Comment
+ */
+ 
+2015-07-31 19:08 UTC-0800 Pritpal Bedi (bedipritpal/at/hotmail.com)
+  + cache.c
+  + c_api.h
+  + cachedic.prg
+  + cachefunc.prg
+  + cacheqry.prg
+  + cacherdd.prg
+  + cacheutils.prg
+  + cacherdd.ch
+  + cacherdd.hbc
+  + cacherdd.hbp
+  + cacherdd.hbx
+  + readme.txt
+    + Initial commit of CacheRDD.
+	   The library is combination of RDD code plus extended functions 
+	   important and/or useful for its implementation.
+	   
+  + bin/
+  + bin/cbind.dll
+  + bin/CacheODBC.dll
+  + bin/cppbind_msvc80.dll
+    + Communication libraries from Intersystems's Cache package V 2007.1. 
+	   These resides in {cache installation folder}\dev\cpp\lib. 
+       I could not get any higher version working with the RDD, so have 
+       included them within this repository. Also Intersystems has 
+	   discountinued support for v 2007.1 making it hard to grab them.
+	   
+  + server/
+  + server/Rdd.mac
+  + server/Vouch.inc
+  + server/Vouch.XhbRdd.cls
+    + Sever-side CacheRDD sources. 
+	   For current eval version of Cache you may not need them to 
+	   compile. Compiled code, CACHE.DAT is also commited here.
+	   You may need to compile it yourself for any subsequent 
+	   Cache versions unles I commit them.
+	   
+  + server/rdd
+  + server/rdd/2015_1
+  + server/rdd/CACHE.DAT
+    + Compiled server-side CacheRDD code with current Cache v 2015.1.
+	   The compiled code is cross-platform and works on any OS.
+	   In fact, CACHE.DAT, be it CacheRDD compiled code or application data,
+	   is portable across platforms. A big boost to high-availability.
+	   
+  + cachemgr/
+  + cachemgr/cachemgr.hbp
+  + cachemgr/cachemgr.res
+  + cachemgr/cachemgr.ch
+  + cachemgr/cachemgr_main.prg
+  + cachemgr/cachemgr_dashboard.prg
+  + cachemgr/cachemgr_misc.prg
+  + cachemgr/cachemgr_query.prg
+  + cachemgr/cachemgr_tablebrowse.prg
+  + cachemgr/cachemgr_tables.prg
+  + cachemgr/cachemgr_ui.prg
+  + cachemgr/wvttowvg.ch
+    + Initial commit of Cache Manager, a DBU like application but with 
+	   many more goodies needed to manage the different aspects of 
+	   your tables withought any need to visit the server. In most 
+	   cases it is all what you will need in addition to your application.
+	   
+  ; Few years earlier I had promised to make available CacheRDD, 
+     probably in 2008, but did not posted due some professional ethics.
+	 Today I am pleased to commit as my employers, CURACAO, has allowed me to 
+	 publish the world's first true RDBMS RDD for (x)Harbour family of compilers.
+	 A big thanks to CURACAO for opening such a wonderful opportunity for 
+	 Harboureans to scale their applications and empower their clients 
+	 with security and reliability. If you also like to thank CURACAO, 
+	 send a thank-you post to Eryk Szachniewicz ( eryksz/@/icuracao.com ), 
+	 Manager, MIS, CURACAO.
+	 
+  ; Note that this RDD was initiated in 2006 and with xHarbour. Even today 
+     CURACAO is still on xHarbour v October 2007. So some constructs in these
+	 sources respect xHarbour symbols, hashes and try/catch - to be precise. 
+	 I have kept them as is to avoid duplicacy. Those are #xtranslate(d) in 
+	 cacherdd.ch. I would like to keep them as is.
+	 
+  ; CacheRDD is based on UsrRDD. I am not a RDD guru at all so some technical 
+     flaws in the code cannot be ruled out. Bear with me and correct if you 
+     find one. RDD is in production at CURACAO since 2007 and seems mature.
+	 Since then we had to reindex only one table, and we know our mistake, 
+	 which was not an RDD or Cache issue, but a flaw in the application.
+	 In peak season 950+ cuncurrent instances of application connect to Cache
+	 without any issues. At present some 325+ tables are on Cache with 
+	 222+ GB database serving 525+ million records. A few tables are still 
+	 on Advantage which are scheduled to be ported to Cache soon.
+	 
+  ; In the past few days I have tried to isolate and format the code as 
+     per Harbour and library standards. Still there is a room to clean it 
+	 further. 
+
+  ; For implementation details please visit at 
+     http://cacherdd.vouch.info
+	 I hope to explain more and more on this site, so please bookmark it.
+	 
