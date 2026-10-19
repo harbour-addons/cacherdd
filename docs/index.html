@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CachéRDD - The real-time RDBMS RDD for Harbour</title>
+<meta name="description" content="CachéRDD is a Replaceable Database Driver for Harbour and xHarbour that connects applications to InterSystems Caché: the same xbase syntax on a true RDBMS, with transactions, locking honored by external processes, and no index corruption. Written by Pritpal Bedi.">
+<style>
+  :root{
+    --ink:#1a2430; --muted:#5d6b77; --bg:#f5f6f8; --card:#ffffff; --line:#e3e6ea;
+    --accent:#2f9be8; --accent-ink:#1668a8; --navy:#101d28; --navy-2:#152637;
+    --code-bg:#14202c; --code-ink:#d7e3ec;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+       background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+  a{color:var(--accent-ink); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  nav{background:var(--navy); color:#dfe7ee; position:sticky; top:0; z-index:10; border-bottom:1px solid #0a141d}
+  nav .wrap{display:flex; align-items:center; gap:18px; height:54px}
+  nav .brand{display:flex; align-items:center; gap:9px; font-weight:600; letter-spacing:.2px; color:#fff; font-size:17px}
+  nav .links{margin-left:auto; display:flex; gap:16px; font-size:13.5px; flex-wrap:wrap}
+  nav .links a{color:#b7c6d4}
+  nav .links a:hover{color:#fff; text-decoration:none}
+  @media (max-width:760px){ nav .links{display:none} }
+
+  header.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 70%,#1b3040 100%); color:#edf3f8; padding:64px 0 56px}
+  .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; color:var(--accent); letter-spacing:1.5px; text-transform:uppercase}
+  .hero h1{font-size:42px; line-height:1.14; font-weight:700; margin:14px 0 16px; letter-spacing:-.02em}
+  .hero p.sub{font-size:18px; color:#c3d2de; max-width:760px}
+  .hero .cta{margin-top:26px; display:flex; gap:12px; flex-wrap:wrap}
+  .btn{display:inline-block; padding:11px 20px; border-radius:6px; font-size:14.5px; font-weight:600; border:1px solid transparent}
+  .btn.primary{background:var(--accent); color:#08151f}
+  .btn.primary:hover{background:#4aabee; text-decoration:none}
+  .btn.ghost{border-color:#3b5468; color:#d8e4ee}
+  .btn.ghost:hover{border-color:var(--accent); color:#fff; text-decoration:none}
+  .hero .meta{margin-top:26px; display:flex; gap:10px; flex-wrap:wrap}
+  .chip{font-size:12.5px; padding:5px 11px; border:1px solid #33506b; border-radius:20px; color:#a9bccd}
+  @media (max-width:600px){ .hero h1{font-size:30px} }
+
+  section{padding:52px 0 8px}
+  h2{font-size:26px; letter-spacing:-.01em; margin-bottom:6px}
+  h2 .hash{color:var(--accent-ink); font-weight:400}
+  .lede{color:var(--muted); max-width:780px; margin-bottom:22px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:26px; margin-bottom:16px}
+  .card h3{font-size:18px; margin-bottom:8px}
+  .card p{margin-bottom:12px}
+  .card p:last-child{margin-bottom:0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px}
+  @media (max-width:860px){ .grid2,.grid3{grid-template-columns:1fr} }
+
+  ul.tick{list-style:none; margin:10px 0 0}
+  ul.tick li{padding:7px 0 7px 26px; position:relative; border-bottom:1px dashed var(--line)}
+  ul.tick li:last-child{border-bottom:none}
+  ul.tick li::before{content:""; position:absolute; left:2px; top:13px; width:8px; height:8px; border-radius:2px; background:var(--accent)}
+  ul.tick li b{font-weight:600}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:6px}
+  @media (max-width:860px){ .stats{grid-template-columns:1fr 1fr} }
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px}
+  .stat .n{font-size:28px; font-weight:700; color:var(--accent-ink); letter-spacing:-.02em}
+  .stat .t{font-size:13px; color:var(--muted); margin-top:4px}
+
+  .layers{display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:14px 0}
+  @media (max-width:860px){ .layers{grid-template-columns:1fr} }
+  .layer{padding:20px; background:var(--card)}
+  .layer + .layer{border-left:1px solid var(--line)}
+  @media (max-width:860px){ .layer + .layer{border-left:none; border-top:1px solid var(--line)} }
+  .layer h4{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--accent-ink); margin-bottom:4px}
+  .layer .role{font-weight:700; margin-bottom:8px}
+  .layer ul{list-style:none; font-size:13.5px; color:var(--muted)}
+  .layer ul li{padding:3px 0}
+
+  .mods{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+  .mod{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12.5px; padding:5px 10px; background:#eaf3fb; border:1px solid #cfe3f4; border-radius:6px; color:#155a8a}
+
+  pre{background:var(--code-bg); color:var(--code-ink); border-radius:10px; padding:18px 20px; overflow-x:auto;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace; font-size:13.5px; line-height:1.65}
+  code.inl{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; background:#edf1f5; border:1px solid var(--line); padding:1px 6px; border-radius:5px}
+
+  .shot{margin:12px 0}
+  .shot img{max-width:100%; border:1px solid var(--line); border-radius:10px; display:block}
+  .shot .cap{font-size:12.5px; color:var(--muted); margin-top:6px}
+
+  details.faq{border:1px solid var(--line); border-radius:10px; background:var(--card); padding:14px 18px; margin-bottom:10px}
+  details.faq summary{cursor:pointer; font-weight:600; font-size:15px}
+  details.faq p{margin-top:10px; color:#33404c; font-size:14.5px}
+
+  .people{display:grid; grid-template-columns:1fr 1fr; gap:4px 24px; margin-top:10px}
+  @media (max-width:700px){ .people{grid-template-columns:1fr} }
+  .people div{padding:8px 0; border-bottom:1px dashed var(--line)}
+  .people b{display:block; font-size:14.5px}
+  .people span{font-size:13px; color:var(--muted)}
+
+  footer{background:var(--navy); color:#9db3c2; margin-top:60px; padding:30px 0; font-size:13.5px}
+  footer .wrap{display:flex; gap:18px; flex-wrap:wrap; align-items:center}
+  footer a{color:#c9d8e4}
+  footer .right{margin-left:auto}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <ellipse cx="12" cy="6" rx="8.5" ry="3" stroke="#2f9be8" stroke-width="1.8"/>
+        <path d="M3.5 6v6c0 1.7 3.8 3 8.5 3s8.5-1.3 8.5-3V6" stroke="#2f9be8" stroke-width="1.8"/>
+        <path d="M3.5 12v6c0 1.7 3.8 3 8.5 3s8.5-1.3 8.5-3v-6" stroke="#2f9be8" stroke-width="1.8"/>
+      </svg>
+      CachéRDD
+    </span>
+    <div class="links">
+      <a href="#overview">Overview</a>
+      <a href="#benefits">Benefits</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#semantics">Semantics</a>
+      <a href="#functions">Functions</a>
+      <a href="#cachemgr">CacheMGR</a>
+      <a href="#faq">FAQ</a>
+      <a href="#credits">Credits</a>
+      <a href="https://sourceforge.net/projects/cacherdd/">SourceForge</a>
+      <a href="https://github.com/harbour-addons/cacherdd">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">cacherdd &middot; Harbour RDD for InterSystems Caché</div>
+    <h1>The real-time RDBMS RDD<br>for the Harbour family of compilers.</h1>
+    <p class="sub">CachéRDD is a RDD (Replaceable Database Driver) for the open-source <b>Harbour</b> and <b>xHarbour</b> compilers to connect to <b>InterSystems Caché</b>, the post-relational, massively scalable database. Written by <b>Pritpal Bedi</b>, published with the kind permission of CURACAO.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/harbour-addons/cacherdd">Browse the source</a>
+      <a class="btn ghost" href="http://cacherdd.sourceforge.net">Full documentation</a>
+      <a class="btn ghost" href="https://sourceforge.net/projects/cacherdd/">SourceForge</a>
+    </div>
+    <div class="meta">
+      <span class="chip">GPL v2 with the Harbour linking exception</span>
+      <span class="chip">No SQL &middot; no DSN &middot; no ODBC driver</span>
+      <span class="chip">In production since 2007</span>
+      <span class="chip">Windows clients &middot; builds with hbmk2</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="overview">
+  <h2><span class="hash">#</span> The same xbase, on a real database</h2>
+  <p class="lede">A classic blend of true RDBMS and time-tested traditional xbase syntax.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>What stays the same</h3>
+      <ul class="tick">
+        <li>the same <b>SEEK</b>, the same <b>SKIP</b>, the same <b>GOTO</b>, <b>GOTOP</b>, <b>GOBOTTOM</b></li>
+        <li>the same <b>INDEX ON</b>, the same <b>TBROWSE</b></li>
+        <li>and that too with <b>billions of records</b>, with same SPEED, even faster in some cases...</li>
+        <li>the same <b>RLOCK</b>, the same <b>FLOCK</b> - even extended to be honored by external processes</li>
+        <li>the same <b>USE EXCLUSIVE / SHARED</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What changes</h3>
+      <p>The ONLY difference is that now your data is more <b>SECURE</b>, <b>SCALABLE</b>, <b>FREE OF INDEX CORRUPTION</b>, with <b>TRANSACTION CONTROL</b>, and subject to <b>INTEGRATION WITH WIDE RANGE OF EXTERNAL SQL TOOLS</b>.</p>
+      <p>AND at top of all you need not to change a single line of source except for resolving table name issues and adjusting a few index expressions here and there.</p>
+      <p>CachéRDD does not issue any SQL commands to the database for any of the RDD functions nor it needs any DSN (Data Source Name). CachéRDD does not require ODBC drivers to be installed. CachéRDD talks to the database directly with its lower level interface. This is the main reason that like DBFCDX functionality has been achieved.</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">2007</div><div class="t">in production at CURACAO since</div></div>
+    <div class="stat"><div class="n">950+</div><div class="t">concurrent application instances in peak season, without any issues</div></div>
+    <div class="stat"><div class="n">325+</div><div class="t">tables on Caché at the time of publishing (2015)</div></div>
+    <div class="stat"><div class="n">525+ M</div><div class="t">records served by a 222+ GB database (2015)</div></div>
+  </div>
+</section>
+
+<section id="benefits">
+  <h2><span class="hash">#</span> Benefits</h2>
+  <p class="lede">What advantages CachéRDD may offer for an (x)Harbour application over its native or other 3rd party RDDs.</p>
+  <div class="grid3">
+    <div class="card"><h3>1 &middot; Scalability</h3><p>The key factor to today's business success is a very high rate of data-sharing among other agencies. Proprietary (x)Harbour table structures cannot provide this feature at all.</p></div>
+    <div class="card"><h3>2 &middot; Platform independence</h3><p>CACHE.DAT, be it CachéRDD compiled code or application data, is portable across platforms. A big boost to high-availability.</p></div>
+    <div class="card"><h3>3 &middot; No more index corruption</h3><p>Indexes in (x)Harbour tend to be corrupted here-and-there, specially in networking environment. A lost index means lost data. CachéRDD ends that class of problem.</p></div>
+    <div class="card"><h3>4 &middot; Transaction control</h3><p>None of the (x)Harbour's native RDDs have this capability at all. Either a transaction is posted in its entirety or nothing is changed in the database.</p></div>
+    <div class="card"><h3>5 &middot; No size limits</h3><p>Native RDDs do not support more than 2 GB physical size and around 400 million records per table. Caché does not have such limitation.</p></div>
+    <div class="card"><h3>6 &middot; Newer technologies</h3><p>Developer can stick to his favourite code syntax for base development yet adopt newer arrivals to connect to same database.</p></div>
+  </div>
+</section>
+
+<section id="architecture">
+  <h2><span class="hash">#</span> Architecture</h2>
+  <p class="lede">C bindings and Caché ObjectScript has been exploited to develop CachéRDD.</p>
+  <div class="layers">
+    <div class="layer">
+      <h4>Application</h4>
+      <div class="role">Application Layer</div>
+      <ul>
+        <li>(x)Harbour Executable</li>
+        <li>linked with CachéRDD.lib</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <h4>C Bindings</h4>
+      <div class="role">Communication Layer</div>
+      <ul>
+        <li>cbind.lib (extracted from cbind.dll)</li>
+        <li>cbind.dll</li>
+        <li>CachéODBC.dll</li>
+        <li>cppbind_msvc80.dll</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <h4>CachéRDD</h4>
+      <div class="role">Database Layer</div>
+      <ul>
+        <li>A Database CACHERDD - holds ObjectScript code</li>
+        <li>A NameSpace CACHERDD having CACHERDD its default database</li>
+        <li>CACHERDD database will have supplied Caché.dat</li>
+        <li>Another NameSpace having any database as its default, to hold all the application data</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h3>XBASE vs SQL</h3>
+    <p>The fundamental difference between XBASE and SQL dialects is that XBASE is processing data on ROW-by-ROW whereas SQL on ROW-SET. So XBASE cannot take advantage of SQL oriented approach. In RDBMS context RDD approach referes to ISAM, Indexed Sequential Access Method. Today no RDBMS provides interface to access tables in this way except for Caché. This great feature of Caché has become the foundation for CachéRDD.</p>
+  </div>
+</section>
+
+<section id="semantics">
+  <h2><span class="hash">#</span> Semantics</h2>
+  <p class="lede">How CachéRDD holds up against RDD behavior - the details that matter when you port an application.</p>
+  <div class="card">
+    <ul class="tick">
+      <li><b>Locks honored everywhere.</b> FLOCK() is maintained on RDD as well as other processes level. Once RLock() is successful, no other process, be it RDD oriented or non-RDD oriented, can update the RLock()d record.</li>
+      <li><b>EXCLUSIVE / SHARED.</b> Processes using CachéRDD will honor EXCLUSIVE/SHARED USE exactly the same way as is applicable in Clipper / (x)Harbour.</li>
+      <li><b>Transactions.</b> Guard database updates with <code class="inl">CacheBeginTransaction()</code> / <code class="inl">CacheEndTransaction()</code>, and <code class="inl">CacheRollBackTransaction()</code> in a RECOVER block. Nested transactions: partially - avoid for now.</li>
+      <li><b>Record numbers never change.</b> Records are given a numeric id as soon as these are inserted. Once a record is given a number, that number never changes, even if a record prior to it is deleted.</li>
+      <li><b>LastRec().</b> Returns the number of records inserted till the time it is called. Deleted records are never taken into account.</li>
+      <li><b>Phantom record.</b> Reached as <code class="inl">DbGoBottom(); DbSkip(1)</code> or via <code class="inl">CacheGotoPhantom()</code> - not <code class="inl">GO LastRec()+1</code>.</li>
+      <li><b>Deleted records are gone permanently.</b> By design, so that RDD applications co-exist with external non-RDD processes; management of deleted records is possible in some other way, documented on the full site.</li>
+      <li><b>Schemas.</b> Logical partitions to arrange tables, like folders on disk (default <code class="inl">SQLUSER</code>). The <code class="inl">VOUCH||MYTABLE.DBF</code> syntax places a table in a schema at DbCreate()/USE time.</li>
+      <li><b>Co-existence.</b> (x)Harbour application can co-exist with VB or DELPHI application using ODBC or other connection protocol to connect to Caché Database manipulating same tables. This design has been implemented intentionally and not by mistake.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="functions">
+  <h2><span class="hash">#</span> Functions</h2>
+  <p class="lede">RDD coverage, plus a library of extended functions for connection, schema, lock, transaction and server management.</p>
+  <div class="card">
+    <h3>RDD functions</h3>
+    <p>Most of the documented RDD functions are implemented - DbSeek() (soft seek and seek-last), DbSkip() (+n / -n), DbCreate(), DbCreateIndex(), DbSetOrder(), DbrLock()/DbrLockList()/DbrUnlock(), and the rest of the daily set. A few are partial (DbInfo(), DbOrdInfo()) and some are not implemented (relations, DbRecall()/Deleted() as such, conditional order-bag functions). The full status table lives in the <a href="http://cacherdd.sourceforge.net/cache_rdd_functions.html">RDD Functions</a> topic of the documentation.</p>
+  </div>
+  <div class="card">
+    <h3>Library functions</h3>
+    <p>Extended functions important and/or useful for the implementation:</p>
+    <div class="mods">
+      <span class="mod">CacheSetServerParams</span><span class="mod">CacheAddConnection</span><span class="mod">CacheAddConnectionEx</span><span class="mod">CacheSetConnection</span><span class="mod">CacheCloseConnection</span><span class="mod">CacheGetConnectionInfo</span><span class="mod">CacheSetSchema</span><span class="mod">CacheSetSchemaAsIs</span><span class="mod">CacheSetTableNameAsIs</span><span class="mod">CacheGetCurrentProcessID</span><span class="mod">CacheGetServerDate</span><span class="mod">CacheGetServerTime</span><span class="mod">CacheSetLocks</span><span class="mod">CacheReleaseLocks</span><span class="mod">CacheExistTable</span><span class="mod">CacheDropTable</span><span class="mod">CacheExistIndex</span><span class="mod">CacheDropIndex</span><span class="mod">CacheExistIndexByTag</span><span class="mod">CacheTuneTable</span><span class="mod">CacheBeginTransaction</span><span class="mod">CacheEndTransaction</span><span class="mod">CacheRollbackTransaction</span><span class="mod">CacheTransactionLevel</span><span class="mod">CacheInsertLockMode</span><span class="mod">CacheLockTimeout</span><span class="mod">CacheFieldFetchMode</span><span class="mod">CacheStartJournal</span><span class="mod">CacheStopJournal</span><span class="mod">CacheGetTables</span><span class="mod">CacheGetProcesses</span><span class="mod">CacheGetProcessInfo</span><span class="mod">CacheGotoPhantom</span><span class="mod">CacheIsRecLocked</span><span class="mod">CacheGetLockInfo</span><span class="mod">CacheGetAllLocks</span><span class="mod">CacheRecallDeleted</span><span class="mod">CacheSetUserInfo</span><span class="mod">CacheGetVersionInfo</span><span class="mod">CacheGetLicenseInfo</span><span class="mod">CacheGetInstallInfo</span><span class="mod">CacheSetUseExclusive</span><span class="mod">CacheGetCounter</span><span class="mod">CacheCreateDatabase</span><span class="mod">CacheCreateNamespace</span><span class="mod">CacheSetDefinition</span><span class="mod">CacheUploadByBuffer</span><span class="mod">CacheDownloadByBuffer</span>
+    </div>
+  </div>
+</section>
+
+<section id="cachemgr">
+  <h2><span class="hash">#</span> CacheMGR</h2>
+  <p class="lede">Cache Manager is an application which exposes many options to manage tables on the server without visiting any Cache provided interfaces. CacheMGR can also be used as a DBU which provides many extended features to make browsing a pleasure. CacheMGR is intended for developers and/or end-user administrators.</p>
+  <div class="card">
+    <div class="shot"><img src="images/mgr_01.png" alt="Main window after invoking CacheMGR."><div class="cap">Main window after invoking CacheMGR.</div></div>
+    <div class="grid2">
+      <div class="shot"><img src="images/mgr_02.png" alt="Extended Functions contains many other options."><div class="cap">&lt;Extended Functions&gt; contains many other options.</div></div>
+      <div class="shot"><img src="images/mgr_08.png" alt="A GTWVG based threaded tbrowse hosting a table."><div class="cap">A GTWVG based threaded tbrowse, consuming almost all of GTWVG objects, hosting a table.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <h2><span class="hash">#</span> FAQ</h2>
+  <p class="lede">From the author's FAQ on the documentation site.</p>
+  <details class="faq" open>
+    <summary>Is CacheRDD usable along with other RDDs?</summary>
+    <p>Yes. RDDADS, DBFCDX and CachéRDD all are tested to be working together. However, you must take care of RDD specific functions which may be called at the execution of the application. For example, AdsGetServerDate() might be a candidate to guard it against which RDD is in operation at the time when this function is called.</p>
+  </details>
+  <details class="faq">
+    <summary>Does CacheRDD support transaction processing?</summary>
+    <p>Yes. You need to guard all your database updates: CacheBeginTransaction(), BEGIN SEQUENCE with your database updation code, RECOVER with CacheRollBackTransaction() in the event of any error, END SEQUENCE, CacheEndTransaction(). In the event of system failure, CacheRollBackTransaction() will ever be executed in case application does not reach to the line CacheEndTransaction().</p>
+  </details>
+  <details class="faq">
+    <summary>Does CacheRDD support compound indexes?</summary>
+    <p>Yes. And these are true server-side indexes. Valid examples: <code class="inl">L_Name + F_Name + Designation</code>, <code class="inl">Code + Dtos( D_Birth ) + Upper( L_Name, 20 ) + Substr( Status, 2, 4 ) + Str( Salary, 10, 2 )</code>.</p>
+  </details>
+  <details class="faq">
+    <summary>Does CacheRDD support conditional indexes?</summary>
+    <p>Yes. But only the FOR condition is supported. As CachéRDD supports only one order bag containing unlimited tags, WHILE condition is not supported at all which creates the temporary indexes which are erased when not needed. CachéRDD handles only persistant indexes.</p>
+  </details>
+  <details class="faq">
+    <summary>What happens if a RLock() has been obtained and some external process is also updating the same record?</summary>
+    <p>Once RLock() is successful, no other process, be it RDD oriented or non-RDD oriented, can update the RLock()d record. It behaves just like other xbase dialect offers. You can be sure that only the instance which has obtained record lock with RLock() can update that record.</p>
+  </details>
+</section>
+
+<section id="todo">
+  <h2><span class="hash">#</span> To do</h2>
+  <p class="lede">A list of features still to be implemented, from the author.</p>
+  <div class="card">
+    <ul class="tick">
+      <li>Relations</li>
+      <li>Multiple Order Bags</li>
+      <li>Disable the feature to manage deleted records</li>
+      <li>CacheRecCount() function to calculate how many records are present physically in the table</li>
+      <li>Bitmap Indexes - easy, but the difficult part is how to use in RDD concepts</li>
+      <li>Key Performance Indicators - CacheRDD controlled Dash-Board</li>
+      <li>Dynamically controlled stored-procedures - still a vague thought but doable</li>
+      <li>User controlled indexes</li>
+    </ul>
+  </div>
+</section>
+
+<section id="credits">
+  <h2><span class="hash">#</span> Credits</h2>
+  <p class="lede">In the author's own words, from the documentation site.</p>
+  <div class="card">
+    <p>CachéRDD's development has been initiated by <b>Curacao</b> under the visionary foresight of <b>Eric Baruch</b> (the then CFO) and dynamic leadership of <b>Eryk Szachniewicz</b>, Manager, MIS.</p>
+    <p>"I am deeply indebted to Curacao which has kindly permitted me to publish the library in any manner I like. And I am highly thankful to Eric Baruch and Eryk Szachniewicz for their superb support."</p>
+    <div class="people">
+      <div><b>Pritpal Bedi</b><span>Author. Initiated the RDD in 2006 with xHarbour; in production at CURACAO since 2007.</span></div>
+      <div><b>CURACAO</b><span>Permitted the library to be published - "the world's first true RDBMS RDD for (x)Harbour family of compilers".</span></div>
+      <div><b>Eric Baruch</b><span>The then CFO, CURACAO - visionary foresight.</span></div>
+      <div><b>Eryk Szachniewicz</b><span>Manager, MIS, CURACAO - dynamic leadership.</span></div>
+      <div><b>Przemek</b><span>UsrRDD - "Thanks Przemek for this superb tool." CachéRDD is developed on top of USRRDD.</span></div>
+      <div><b>InterSystems</b><span>Caché and the communication libraries; the binaries in bin/ remain InterSystems property.</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>CachéRDD by Pritpal Bedi &middot; GPL v2 with the Harbour linking exception &middot; InterSystems binaries remain InterSystems property</span>
+    <span class="right">
+      <a href="https://github.com/harbour-addons/cacherdd">GitHub</a> &middot;
+      <a href="http://cacherdd.sourceforge.net">Original documentation</a> &middot;
+      <a href="https://sourceforge.net/projects/cacherdd/">SourceForge</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
